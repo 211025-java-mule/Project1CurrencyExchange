@@ -11,12 +11,10 @@ import java.util.Properties;
 public class ApplicationContext {
 
     private final static Logger log = LoggerFactory.getLogger(ApplicationContext.class.getName());
-    private ObjectMapper mapper;
-
-    private CurrencyService currencyService;
-    private CurrencyFileRepository currencyFileRepository;
+//    private ObjectMapper mapper;
+//    private CurrencyService currencyService;
+//    private CurrencyFileRepository currencyFileRepository;
     private Properties properties;
-
 
     private void argsParser(String[] args) {
         if (args.length > 0) {
@@ -49,15 +47,15 @@ public class ApplicationContext {
     }
 
 
-    public ApplicationContext(String[] args) {
-        this.properties = new Properties();
-        this.mapper = new ObjectMapper();
-        argsParser(args);
-        this.currencyService = new CurrencyService(mapper);
-        this.currencyFileRepository = new CurrencyFileRepository(mapper);
-
-
-
-    }
+//    public ApplicationContext(String[] args) {
+//        this.properties = new Properties();
+//        this.mapper = new ObjectMapper();
+//        argsParser(args);
+//        this.currencyService = new CurrencyService(mapper);
+//        this.currencyFileRepository = new CurrencyFileRepository(mapper);
+//
+//
+//
+//    }
 
 }

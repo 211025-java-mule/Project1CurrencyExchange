@@ -8,15 +8,12 @@ public class Component {
 
     @Autowired
     CurrencyPostgresRepository currencyPostgresRepository;
-    @Autowired
-    Currency currencyOutput;
+
     @Autowired
     CurrencyService currencyService;
 
-
-
-    @Scheduled(fixedDelay = 180000)
-    public void siema(){
+    @Scheduled(fixedDelay = 2700000)
+    public void getCurrencyScheduled(){
         currencyPostgresRepository.createCurrency(currencyService.getCurrency());
     }
 

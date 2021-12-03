@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
 @Component
 public class CurrencyService {
@@ -26,15 +24,6 @@ public class CurrencyService {
         this.mapper = mapper;
     }
 
-    private URL getUrl(String urlString) {
-        URL url = null;
-        try {
-            url = new URL(urlStringFromProperties);
-        } catch (MalformedURLException e) {
-            log.error("URL not found");
-        }
-        return url;
-    }
     private static HttpURLConnection getHttpURLConnection(URL url) {
         HttpURLConnection connection = null;
         try {
@@ -74,6 +63,7 @@ public class CurrencyService {
     public Currency getCurrency() {
 
         HttpURLConnection httpURLConnection = null;
+        log.info("tring to get data from url {}", urlStringFromProperties);
         try {
             httpURLConnection = getHttpURLConnection(new URL(urlStringFromProperties));
         } catch (MalformedURLException e) {

@@ -1,51 +1,66 @@
 package com.example.project1currency.Controller;
 
+import com.example.project1currency.ApplicationContext;
 import com.example.project1currency.Currency;
 import com.example.project1currency.CurrencyPostgresRepository;
+import com.example.project1currency.Statistic.StatisticService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.example.project1currency.SQL.SQLStatement.SQL;
+import static com.example.project1currency.SQL.SQLStatement.SQL_ONE_CURRENCY;
+import static com.example.project1currency.Statistic.StatisticEnum.AVERAGE;
+import static com.example.project1currency.Statistic.StatisticEnum.STANDARD_DEVIATION;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @RequestMapping("/currency")
 public class CurrencyController {
 
+    private final static Logger log = LoggerFactory.getLogger(ApplicationContext.class.getName());
+
     @Autowired
     CurrencyPostgresRepository currencyPostgresRepository;
 
     @Autowired
-    Currency currencyOutput;
+    StatisticService statisticService;
 
 
-    @RequestMapping("/getPageData")
-    public List<Currency> getPageData(){
-        return currencyPostgresRepository.createJsonCurrency(currencyOutput);
+    @RequestMapping(method=GET, value={"/getPageData","/getPageData/{currencyName}"})
+    public List<Currency> getPageData(@PathVariable(required = false) String currencyName){
+        if(currencyName != null){
+            String SQL = String.format(SQL_ONE_CURRENCY,currencyName);
+            return currencyPostgresRepository.createJsonCurrency(SQL);
+        }
+        return currencyPostgresRepository.createJsonCurrency(SQL);
+
     }
 
-    @RequestMapping("/getCalculation")
-    public String getCalculation(){
-        ///localhost:8081/currency/calculate
 
-        RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8081/currency/calculate";
-        CurrencyData currencyData = new CurrencyData();
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        currencyData.setCurrencyList(currencyPostgresRepository.createJsonCurrency(currencyOutput));
-        final HttpEntity<CurrencyData> entity = new HttpEntity<>(currencyData,headers);
-        ResponseEntity<String> response
-                = restTemplate.postForEntity(resourceUrl, entity, String.class);
+    @RequestMapping(method=GET, value={"/{statisticName}","/{statisticName}/{currencyName}"})
+    public Map<String, Double> getCalculation(@PathVariable String statisticName, @PathVariable(required = false) String currencyName) {
+        if (statisticName.equals(AVERAGE.getDisplayName())) {
+            return statisticService.getAvg(currencyName);
+        }
+        if (statisticName.equals(STANDARD_DEVIATION.getDisplayName())) {
+            return statisticService.getDev(currencyName);
+        }
 
-        return response.getBody();
+        return new HashMap<>();
+
+
     }
+
+
+
+
+
 
 }
