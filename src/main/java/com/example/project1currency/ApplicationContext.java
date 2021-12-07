@@ -11,9 +11,6 @@ import java.util.Properties;
 public class ApplicationContext {
 
     private final static Logger log = LoggerFactory.getLogger(ApplicationContext.class.getName());
-//    private ObjectMapper mapper;
-//    private CurrencyService currencyService;
-//    private CurrencyFileRepository currencyFileRepository;
     private Properties properties;
 
     private void argsParser(String[] args) {
@@ -53,9 +50,6 @@ public class ApplicationContext {
 //        argsParser(args);
 //        this.currencyService = new CurrencyService(mapper);
 //        this.currencyFileRepository = new CurrencyFileRepository(mapper);
-//
-//
-//
 //    }
 
 }
